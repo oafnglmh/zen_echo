@@ -36,7 +36,7 @@ class _SplashPageState extends State<SplashPage> {
   void _scheduleNavigation() {
     Future.delayed(_splashDuration, () {
       if (!mounted) return;
-      context.go(AppRoutes.home);
+      context.go(AppRoutes.onboarding);
     });
   }
 
