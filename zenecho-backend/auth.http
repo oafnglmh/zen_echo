@@ -1,0 +1,54 @@
+### Variables
+@baseUrl = http://localhost:3000
+@email = dev@zenecho.com
+@password = Password123!
+@name = Dev ZenEcho
+
+### 1. Register User
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "name": "{{name}}"
+}
+
+### 2. Login User
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Save Tokens from response
+@accessToken = {{login.response.body.data.accessToken}}
+@refreshToken = {{login.response.body.data.refreshToken}}
+
+### 3. Get User Profile (Protected - Requires Access Token)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{accessToken}}
+
+### 4. Refresh Tokens (Requires Refresh Token)
+# @name refresh
+POST {{baseUrl}}/auth/refresh
+Authorization: Bearer {{refreshToken}}
+
+### Save New Tokens
+@newAccessToken = {{refresh.response.body.data.accessToken}}
+@newRefreshToken = {{refresh.response.body.data.refreshToken}}
+
+### 5. Get User Profile with New Access Token
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{newAccessToken}}
+
+### 6. Logout User (Invalidates Refresh Token in DB)
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{newAccessToken}}
+
+### 7. Try to Refresh again (Should fail with 401 as token is revoked)
+POST {{baseUrl}}/auth/refresh
+Authorization: Bearer {{newRefreshToken}}

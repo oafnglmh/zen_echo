@@ -54,3 +54,15 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# SQLite local databases (just in case they are used locally)
+*.db
+*.db-journal
+*.sqlite
+
+# Docker local overrides
+docker-compose.override.yml
+
+# Private HTTP client configurations (for auth.http local tokens)
+http-client.private.env.json
+.http-client/
