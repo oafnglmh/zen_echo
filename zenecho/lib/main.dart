@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/constants/app_colors.dart';
+import 'core/di/dependency_injection.dart' as di;
 import 'core/router/app_router.dart';
+import 'features/auth/presentation/bloc/auth/auth_bloc.dart';
+import 'features/auth/presentation/bloc/auth/auth_event.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
+  
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  runApp(const ZenEchoApp());
+  runApp(
+    BlocProvider<AuthBloc>(
+      lazy: false,
+      create: (context) => di.sl<AuthBloc>()..add(const AuthEvent.checkRequested()),
+      child: const ZenEchoApp(),
+    ),
+  );
 }
 
 class ZenEchoApp extends StatelessWidget {

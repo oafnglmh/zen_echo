@@ -57,7 +57,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _navigateToHome() {
-    context.go(AppRoutes.home);
+    context.go(AppRoutes.login);
   }
 
   @override
