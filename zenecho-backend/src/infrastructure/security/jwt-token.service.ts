@@ -23,14 +23,14 @@ export class JwtTokenService implements ITokenService {
   async generateAccessToken(payload: any): Promise<string> {
     return this.jwtService.signAsync(payload, {
       secret: this.accessSecret,
-      expiresIn: this.accessExpiration,
+      expiresIn: this.accessExpiration as any,
     });
   }
 
   async generateRefreshToken(payload: any): Promise<string> {
     return this.jwtService.signAsync(payload, {
       secret: this.refreshSecret,
-      expiresIn: this.refreshExpiration,
+      expiresIn: this.refreshExpiration as any,
     });
   }
 
