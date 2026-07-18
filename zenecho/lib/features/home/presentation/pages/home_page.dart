@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../auth/presentation/bloc/auth/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth/auth_event.dart';
 
@@ -169,6 +171,61 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
+      ),
+      bottomNavigationBar: _buildBottomNav(context),
+    );
+  }
+
+  Widget _buildBottomNav(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.bgSurface,
+        border: Border(
+          top: BorderSide(
+            color: AppColors.brandNavyLight.withOpacity(0.5),
+            width: 1,
+          ),
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildNavItem(Icons.home_rounded, 'Home', true, () {}),
+          _buildNavItem(Icons.calendar_month_outlined, 'Timeline', false, () {}),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: const BoxDecoration(
+              color: AppColors.accent,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.add, color: Colors.white, size: 24),
+          ),
+          _buildNavItem(Icons.bubble_chart_outlined, 'AI Recap', false, () {}),
+          _buildNavItem(Icons.person_outline_rounded, 'Profile', false, () => context.go(AppRoutes.profile)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavItem(IconData icon, String label, bool isActive, VoidCallback onTap) {
+    final color = isActive ? AppColors.accent : AppColors.textSubtle;
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 10,
+              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ],
       ),
     );
   }

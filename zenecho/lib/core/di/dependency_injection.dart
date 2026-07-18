@@ -16,6 +16,18 @@ import '../network/api_endpoints.dart';
 import '../network/dio_client.dart';
 import '../storage/secure_storage.dart';
 
+// Profile Feature
+import '../../features/profile/data/datasources/profile_local_data_source.dart';
+import '../../features/profile/data/datasources/profile_remote_data_source.dart';
+import '../../features/profile/data/repositories/profile_repository_impl.dart';
+import '../../features/profile/domain/repositories/profile_repository.dart';
+import '../../features/profile/domain/usecases/get_profile_use_case.dart';
+import '../../features/profile/domain/usecases/update_profile_use_case.dart';
+import '../../features/profile/domain/usecases/upload_avatar_use_case.dart';
+import '../../features/profile/domain/usecases/delete_account_use_case.dart';
+import '../../features/profile/presentation/bloc/profile/profile_bloc.dart';
+import '../../features/profile/presentation/bloc/delete_account/delete_account_cubit.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -82,4 +94,38 @@ Future<void> init() async {
 
   sl.registerFactory(() => LoginBloc(sl()));
   sl.registerFactory(() => SignUpBloc(sl()));
+
+  // ==========================================
+  // Features - Profile
+  // ==========================================
+
+  // Data Sources
+  sl.registerLazySingleton<ProfileLocalDataSource>(
+    () => ProfileLocalDataSourceImpl(sl<FlutterSecureStorage>()),
+  );
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(sl()),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(sl(), sl(), sl()),
+  );
+
+  // Use Cases
+  sl.registerLazySingleton(() => GetProfileUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
+  sl.registerLazySingleton(() => UploadAvatarUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteAccountUseCase(sl()));
+
+  // BloCs / Cubits
+  sl.registerLazySingleton(
+    () => ProfileBloc(
+      getProfileUseCase: sl(),
+      updateProfileUseCase: sl(),
+      uploadAvatarUseCase: sl(),
+    ),
+  );
+
+  sl.registerFactory(() => DeleteAccountCubit(sl()));
 }

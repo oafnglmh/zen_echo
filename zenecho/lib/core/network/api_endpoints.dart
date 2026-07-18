@@ -18,4 +18,8 @@ abstract final class ApiEndpoints {
   static const String refresh = '/auth/refresh';
   static const String me = '/auth/me';
   static const String logout = '/auth/logout';
+  static const String updateProfile = '/auth/profile';
+  static const String updatePrivacy = '/auth/privacy';
+  static const String uploadAvatar = '/auth/avatar';
+  static const String deleteAccount = '/auth/delete';
 }

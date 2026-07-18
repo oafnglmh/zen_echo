@@ -16,4 +16,13 @@ abstract final class AppColors {
 
   static const Color accent = Color(0xFF5B8DEF);
   static const Color accentDim = Color(0xFF3A6BC7);
+
+  static const Color lightBg = Color(0xFFF4F6FA);
+  static const Color lightSurface = Colors.white;
+  static const Color lightTextPrimary = Color(0xFF0F172A);
+  static const Color lightTextSecondary = Color(0xFF64748B);
+  static const Color lightAccent = Color(0xFF3B82F6);
+  static const Color lightBorder = Color(0xFFE2E8F0);
+  static const Color lightDestructive = Color(0xFFEF4444);
+  static const Color lightDestructiveBg = Color(0xFFFEE2E2);
 }

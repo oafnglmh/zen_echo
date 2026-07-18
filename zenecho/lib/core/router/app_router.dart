@@ -10,6 +10,10 @@ import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/otp_verification_page.dart';
 import '../../features/auth/presentation/bloc/auth/auth_bloc.dart';
 import '../di/dependency_injection.dart';
+import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/profile/presentation/pages/edit_profile_page.dart';
+import '../../features/profile/presentation/pages/privacy_settings_page.dart';
+import '../../features/profile/presentation/pages/account_page.dart';
 
 abstract final class AppRoutes {
   static const String splash = '/';
@@ -19,6 +23,10 @@ abstract final class AppRoutes {
   static const String forgotPassword = '/forgot-password';
   static const String otpVerification = '/otp-verification';
   static const String home = '/home';
+  static const String profile = '/profile';
+  static const String editProfile = '/profile/edit';
+  static const String privacySettings = '/profile/privacy';
+  static const String account = '/profile/account';
 }
 
 class GoRouterRefreshStream extends ChangeNotifier {
@@ -45,7 +53,8 @@ final appRouter = GoRouter(
     final bool isOnboarding = state.matchedLocation == AppRoutes.onboarding;
     final bool isLogin = state.matchedLocation == AppRoutes.login;
     final bool isSignUp = state.matchedLocation == AppRoutes.signUp;
-    final bool isForgotPassword = state.matchedLocation == AppRoutes.forgotPassword;
+    final bool isForgotPassword =
+        state.matchedLocation == AppRoutes.forgotPassword;
     final bool isOtp = state.matchedLocation == AppRoutes.otpVerification;
 
     final bool isAuthPage = isLogin || isSignUp || isForgotPassword || isOtp;
@@ -58,11 +67,15 @@ final appRouter = GoRouter(
     );
 
     if (isInitialLoading) {
-      print('DEBUG: Router redirect: isInitialLoading = true. Redirecting to Splash if not already there.');
+      print(
+        'DEBUG: Router redirect: isInitialLoading = true. Redirecting to Splash if not already there.',
+      );
       return isSplash ? null : AppRoutes.splash;
     }
 
-    print('DEBUG: Router redirect: authState = $authState, location = ${state.matchedLocation}, isInitialLoading = false');
+    print(
+      'DEBUG: Router redirect: authState = $authState, location = ${state.matchedLocation}, isInitialLoading = false',
+    );
 
     return authState.maybeWhen(
       authenticated: (user) {
@@ -109,6 +122,22 @@ final appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.home,
       builder: (context, state) => const HomePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.profile,
+      builder: (context, state) => const ProfilePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.editProfile,
+      builder: (context, state) => const EditProfilePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.privacySettings,
+      builder: (context, state) => const PrivacySettingsPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.account,
+      builder: (context, state) => const AccountPage(),
     ),
   ],
 );
