@@ -5,11 +5,16 @@ import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
+import * as express from 'express';
+import { join } from 'path';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS
   app.enableCors();
+
+  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
 
   // Global validation pipe
   app.useGlobalPipes(

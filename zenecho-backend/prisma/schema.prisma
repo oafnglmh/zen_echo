@@ -19,5 +19,26 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // Profile fields
+  username     String?  @unique
+  bio          String?  @default("Collecting moments, not things.\nBuilding ZenEcho 💙")
+  avatarUrl    String?
+  location     String?  @default("Da Nang, Vietnam")
+  website      String?  @default("https://github.com/hoangcoder")
+  
+  // Statistics
+  memoriesCount Int     @default(128)
+  friendsCount  Int     @default(24)
+  capsulesCount Int     @default(12)
+
+  // Privacy Settings
+  profileVisibility      String   @default("Friends")
+  memoryVisibility       String   @default("Friends")
+  allowShareMemories     Boolean  @default(true)
+  showMemoriesOnTimeline Boolean  @default(true)
+  showOnlineStatus       Boolean  @default(true)
+  allowFriendRequests    Boolean  @default(true)
+  allowMessagesFrom      String   @default("Friends")
+
   @@map("users")
 }

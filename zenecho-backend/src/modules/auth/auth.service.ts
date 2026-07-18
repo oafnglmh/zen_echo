@@ -5,6 +5,8 @@ import { IHashService } from '../../core/interfaces/services/hash-service.interf
 import { ITokenService } from '../../core/interfaces/services/token-service.interface';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
+import { UpdateProfileDto } from './dtos/update-profile.dto';
+import { UpdatePrivacyDto } from './dtos/update-privacy.dto';
 
 @Injectable()
 export class AuthService {
@@ -92,5 +94,27 @@ export class AuthService {
   private async updateRefreshToken(userId: string, refreshToken: string) {
     const hashedToken = await this.hashService.hash(refreshToken);
     await this.userRepository.updateRefreshToken(userId, hashedToken);
+  }
+
+  async updateProfile(userId: string, dto: UpdateProfileDto): Promise<Omit<User, 'password' | 'refreshToken'>> {
+    const updatedUser = await this.userRepository.updateProfile(userId, dto);
+    const { password, refreshToken, ...userWithoutSecrets } = updatedUser;
+    return userWithoutSecrets;
+  }
+
+  async updatePrivacy(userId: string, dto: UpdatePrivacyDto): Promise<Omit<User, 'password' | 'refreshToken'>> {
+    const updatedUser = await this.userRepository.updateProfile(userId, dto);
+    const { password, refreshToken, ...userWithoutSecrets } = updatedUser;
+    return userWithoutSecrets;
+  }
+
+  async updateAvatar(userId: string, avatarUrl: string): Promise<Omit<User, 'password' | 'refreshToken'>> {
+    const updatedUser = await this.userRepository.updateProfile(userId, { avatarUrl });
+    const { password, refreshToken, ...userWithoutSecrets } = updatedUser;
+    return userWithoutSecrets;
+  }
+
+  async deleteAccount(userId: string): Promise<void> {
+    await this.userRepository.deleteUser(userId);
   }
 }

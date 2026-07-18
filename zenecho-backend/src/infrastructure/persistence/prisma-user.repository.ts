@@ -50,6 +50,35 @@ export class PrismaUserRepository implements IUserRepository {
     });
   }
 
+  async updateProfile(id: string, data: Partial<User>): Promise<User> {
+    const prismaUser = await this.prisma.user.update({
+      where: { id },
+      data: {
+        name: data.name !== undefined ? data.name : undefined,
+        username: data.username !== undefined ? data.username : undefined,
+        bio: data.bio !== undefined ? data.bio : undefined,
+        avatarUrl: data.avatarUrl !== undefined ? data.avatarUrl : undefined,
+        location: data.location !== undefined ? data.location : undefined,
+        website: data.website !== undefined ? data.website : undefined,
+        profileVisibility: data.profileVisibility !== undefined ? data.profileVisibility : undefined,
+        memoryVisibility: data.memoryVisibility !== undefined ? data.memoryVisibility : undefined,
+        allowShareMemories: data.allowShareMemories !== undefined ? data.allowShareMemories : undefined,
+        showMemoriesOnTimeline: data.showMemoriesOnTimeline !== undefined ? data.showMemoriesOnTimeline : undefined,
+        showOnlineStatus: data.showOnlineStatus !== undefined ? data.showOnlineStatus : undefined,
+        allowFriendRequests: data.allowFriendRequests !== undefined ? data.allowFriendRequests : undefined,
+        allowMessagesFrom: data.allowMessagesFrom !== undefined ? data.allowMessagesFrom : undefined,
+      },
+    });
+
+    return this.mapToEntity(prismaUser);
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    await this.prisma.user.delete({
+      where: { id },
+    });
+  }
+
   private mapToEntity(prismaUser: any): User {
     return new User({
       id: prismaUser.id,
@@ -59,6 +88,21 @@ export class PrismaUserRepository implements IUserRepository {
       refreshToken: prismaUser.refreshToken,
       createdAt: prismaUser.createdAt,
       updatedAt: prismaUser.updatedAt,
+      username: prismaUser.username,
+      bio: prismaUser.bio,
+      avatarUrl: prismaUser.avatarUrl,
+      location: prismaUser.location,
+      website: prismaUser.website,
+      memoriesCount: prismaUser.memoriesCount,
+      friendsCount: prismaUser.friendsCount,
+      capsulesCount: prismaUser.capsulesCount,
+      profileVisibility: prismaUser.profileVisibility,
+      memoryVisibility: prismaUser.memoryVisibility,
+      allowShareMemories: prismaUser.allowShareMemories,
+      showMemoriesOnTimeline: prismaUser.showMemoriesOnTimeline,
+      showOnlineStatus: prismaUser.showOnlineStatus,
+      allowFriendRequests: prismaUser.allowFriendRequests,
+      allowMessagesFrom: prismaUser.allowMessagesFrom,
     });
   }
 }
