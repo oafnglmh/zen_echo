@@ -4,10 +4,97 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../auth/presentation/bloc/auth/auth_bloc.dart';
-import '../../../auth/presentation/bloc/auth/auth_event.dart';
+import '../widgets/friends_avatar_bar.dart';
+import '../widgets/home_header.dart';
+import '../widgets/memory_feed_card.dart';
+import '../widgets/zen_bottom_nav_bar.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _currentTabIndex = 0;
+
+  final List<FriendStory> _mockFriends = const [
+    FriendStory(
+      id: '1',
+      name: 'Minh',
+      avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+    ),
+    FriendStory(
+      id: '2',
+      name: 'An',
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+    ),
+    FriendStory(
+      id: '3',
+      name: 'Linh',
+      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150',
+    ),
+    FriendStory(
+      id: '4',
+      name: 'Quân',
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+    ),
+    FriendStory(
+      id: '5',
+      name: 'Huyền',
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+    ),
+  ];
+
+  final List<MemoryItem> _mockMemories = const [
+    MemoryItem(
+      id: 'mem_1',
+      authorName: 'Minh',
+      authorAvatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+      timeAgo: 'Today · 8:42 AM',
+      mediaType: MemoryMediaType.image,
+      mediaUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800',
+      moodEmoji: '😊',
+      moodLabel: 'Happy',
+      location: 'Da Nang',
+      likeCount: 128,
+      isLiked: true,
+    ),
+    MemoryItem(
+      id: 'mem_2',
+      authorName: 'An',
+      authorAvatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+      timeAgo: 'Yesterday · 9:15 PM',
+      mediaType: MemoryMediaType.video,
+      mediaUrl: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800',
+      videoDuration: '0:12',
+      moodEmoji: '😌',
+      moodLabel: 'Calm',
+      location: 'Hoi An',
+      likeCount: 96,
+      isLiked: false,
+    ),
+  ];
+
+  void _onTabSelected(int index) {
+    if (index == 4) {
+      context.go(AppRoutes.profile);
+    } else {
+      setState(() {
+        _currentTabIndex = index;
+      });
+    }
+  }
+
+  void _onCreateMemoryTap() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Capturing today\'s memory...'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,257 +104,62 @@ class HomePage extends StatelessWidget {
       orElse: () => null,
     );
 
+    final displayName = user?.name ?? 'Hoàng';
+
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.topCenter,
-            radius: 1.2,
-            colors: [
-              AppColors.bgSurface,
-              AppColors.bgMid,
-              AppColors.bgDark,
-            ],
-            stops: [0.0, 0.5, 1.0],
-          ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 32),
-                // Mindful Sound Logo / Title
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: AppColors.accent,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'ZENECHO',
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 8,
-                      ),
-                    ),
-                  ],
+      backgroundColor: AppColors.lightBg,
+      body: SafeArea(
+        bottom: false,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                child: HomeHeader(
+                  userName: displayName,
+                  onNotificationTap: () {},
+                  onMessagesTap: () {},
                 ),
-                const Spacer(flex: 2),
-                
-                // Welcome Message Card
-                if (user != null) ...[
-                  Text(
-                    'Chào mừng trở lại,',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.textSubtle,
-                      fontSize: 14,
-                      letterSpacing: 1.5,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    user.name,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w300,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '“Hãy hít thở sâu và thư giãn cùng những âm thanh chánh niệm.”',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.textSubtle.withOpacity(0.8),
-                      fontSize: 13,
-                      fontStyle: FontStyle.italic,
-                      height: 1.6,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  
-                  // User details card
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: AppColors.bgSurface.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: AppColors.brandNavyLight.withOpacity(0.4),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        _buildProfileField(
-                          label: 'Email',
-                          value: user.email,
-                          icon: Icons.email_outlined,
-                        ),
-                        const Divider(
-                          color: AppColors.brandNavyLight,
-                          height: 24,
-                        ),
-                        _buildProfileField(
-                          label: 'ID Tài khoản',
-                          value: user.id,
-                          icon: Icons.fingerprint_rounded,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-
-                const Spacer(flex: 3),
-
-                // Log out Button
-                ElevatedButton.icon(
-                  onPressed: () {
-                    context.read<AuthBloc>().add(const AuthEvent.logoutRequested());
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 12),
+                child: FriendsAvatarBar(
+                  friends: _mockFriends,
+                  onAddMomentTap: _onCreateMemoryTap,
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final memory = _mockMemories[index];
+                    return MemoryFeedCard(
+                      memory: memory,
+                      onLikeTap: () {},
+                      onSendMsgTap: () {},
+                      onMoreTap: () {},
+                    );
                   },
-                  icon: const Icon(
-                    Icons.logout_rounded,
-                    color: AppColors.textPrimary,
-                    size: 18,
-                  ),
-                  label: const Text(
-                    'Đăng Xuất',
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.8,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.accentDim,
-                    foregroundColor: AppColors.textPrimary,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: _buildBottomNav(context),
-    );
-  }
-
-  Widget _buildBottomNav(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.bgSurface,
-        border: Border(
-          top: BorderSide(
-            color: AppColors.brandNavyLight.withOpacity(0.5),
-            width: 1,
-          ),
-        ),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(Icons.home_rounded, 'Home', true, () {}),
-          _buildNavItem(Icons.calendar_month_outlined, 'Timeline', false, () {}),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: const BoxDecoration(
-              color: AppColors.accent,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.add, color: Colors.white, size: 24),
-          ),
-          _buildNavItem(Icons.bubble_chart_outlined, 'AI Recap', false, () {}),
-          _buildNavItem(Icons.person_outline_rounded, 'Profile', false, () => context.go(AppRoutes.profile)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, bool isActive, VoidCallback onTap) {
-    final color = isActive ? AppColors.accent : AppColors.textSubtle;
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 10,
-              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProfileField({
-    required String label,
-    required String value,
-    required IconData icon,
-  }) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          color: AppColors.accent,
-          size: 20,
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  color: AppColors.textSubtle,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
+                  childCount: _mockMemories.length,
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
+          ],
         ),
-      ],
+      ),
+      bottomNavigationBar: ZenBottomNavBar(
+        selectedIndex: _currentTabIndex,
+        onTabSelected: _onTabSelected,
+        onCreateTap: _onCreateMemoryTap,
+      ),
     );
   }
 }

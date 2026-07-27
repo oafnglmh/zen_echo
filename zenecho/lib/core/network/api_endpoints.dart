@@ -22,4 +22,8 @@ abstract final class ApiEndpoints {
   static const String updatePrivacy = '/auth/privacy';
   static const String uploadAvatar = '/auth/avatar';
   static const String deleteAccount = '/auth/delete';
+
+  // Memory endpoints
+  static const String memories = '/memories';
+  static const String memoriesFeed = '/memories/feed';
 }

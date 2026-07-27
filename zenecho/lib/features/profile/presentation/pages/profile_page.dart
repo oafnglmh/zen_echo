@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/router/app_router.dart';
+import '../../../home/presentation/widgets/zen_bottom_nav_bar.dart';
 import '../../domain/entities/profile.dart';
 import '../bloc/profile/profile_bloc.dart';
 import '../bloc/profile/profile_event.dart';
@@ -392,7 +393,19 @@ class _ProfilePageState extends State<ProfilePage> {
           );
         },
       ),
-      bottomNavigationBar: _buildBottomNav(context),
+      bottomNavigationBar: ZenBottomNavBar(
+        selectedIndex: 4, // Profile index
+        onTabSelected: (index) {
+          if (index == 0) {
+            context.go(AppRoutes.home);
+          }
+        },
+        onCreateTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Capturing today\'s memory...')),
+          );
+        },
+      ),
     );
   }
 
@@ -453,60 +466,6 @@ class _ProfilePageState extends State<ProfilePage> {
       color: AppColors.lightBorder,
       indent: 20,
       endIndent: 20,
-    );
-  }
-
-  Widget _buildBottomNav(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.lightSurface,
-        border: Border(
-          top: BorderSide(
-            color: AppColors.lightBorder,
-            width: 1,
-          ),
-        ),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(Icons.home_outlined, 'Home', false, () => context.go(AppRoutes.home)),
-          _buildNavItem(Icons.calendar_month_outlined, 'Timeline', false, () {}),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: const BoxDecoration(
-              color: AppColors.lightAccent,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.add, color: Colors.white, size: 24),
-          ),
-          _buildNavItem(Icons.bubble_chart_outlined, 'AI Recap', false, () {}),
-          _buildNavItem(Icons.person_rounded, 'Profile', true, () {}),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, bool isActive, VoidCallback onTap) {
-    final color = isActive ? AppColors.lightAccent : AppColors.lightTextSecondary;
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 10,
-              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
